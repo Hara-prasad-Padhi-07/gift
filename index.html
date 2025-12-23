@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Christmas E‑Card — For My Best Friend, My Love, My Life</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b1220;
+    --red:#ff4d6d;
+    --gold:#ffd166;
+    --green:#2ec4b6;
+    --white:#f7f7ff;
+    --snow:#cfe3ff;
+    --accent:#9b5de5;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:var(--bg);color:var(--white);font-family:Poppins,system-ui,Segoe UI,Arial}
+  body{overflow:hidden}
+
+  /* Layout */
+  .app{
+    position:relative;
+    width:100%;
+    height:100%;
+    display:grid;
+    grid-template-rows:auto 1fr auto;
+  }
+  header,footer{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 16px; backdrop-filter: blur(6px);
+  }
+  header{background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));}
+  footer{background:linear-gradient(0deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));}
+
+  .brand{
+    display:flex;gap:10px;align-items:center;font-weight:700;letter-spacing:0.5px;
+  }
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red)}
+  .controls{display:flex;gap:8px;align-items:center}
+  button{
+    border:none;border-radius:10px;padding:10px 14px;font-weight:600;
+    color:var(--bg);background:var(--gold);cursor:pointer;transition:transform .2s, box-shadow .2s;
+  }
+  button:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.35)}
+  button.secondary{background:var(--white)}
+  button.ghost{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.25)}
+  .page-indicator{font-size:12px;opacity:.8}
+
+  /* Pages */
+  .pages{position:relative;overflow:hidden}
+  .page{
+    position:absolute;inset:0;padding:24px;display:grid;place-items:center;text-align:center;
+    opacity:0;transform:translateY(20px) scale(.98);pointer-events:none;
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .page.active{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+  .card{
+    width:min(900px, 92vw);
+    border-radius:24px;
+    padding:28px;
+    background:radial-gradient(1200px 600px at 10% 10%, rgba(255,255,255,.08), transparent 60%),
+               radial-gradient(1200px 600px at 90% 90%, rgba(255,255,255,.08), transparent 60%),
+               rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.15);
+    box-shadow:0 30px 80px rgba(0,0,0,.45);
+    position:relative;overflow:hidden;
+  }
+  .title{
+    font-family:"Great Vibes", cursive;
+    font-size:clamp(36px, 6vw, 64px);
+    color:var(--gold);
+    text-shadow:0 0 12px rgba(255,209,102,.35);
+    margin:0 0 8px;
+  }
+  .subtitle{font-size:clamp(16px, 2.6vw, 22px);opacity:.9;margin:0 0 18px}
+  .message{font-size:clamp(16px, 2.2vw, 20px);line-height:1.6;opacity:.95;margin:0 auto;max-width:60ch}
+  .cta{margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+  /* Mascot (Santa Cat) */
+  .mascot{
+    position:absolute;right:-10px;bottom:-10px;width:min(240px, 35vw);
+    filter:drop-shadow(0 12px 24px rgba(0,0,0,.45));
+    animation:floaty 4s ease-in-out infinite;
+  }
+  @keyframes floaty{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-8px)}
+  }
+
+  /* Snow */
+  .snow{position:absolute;inset:0;pointer-events:none}
+  .flake{
+    position:absolute;top:-10px;width:8px;height:8px;border-radius:50%;
+    background:var(--snow);opacity:.9;filter:blur(.6px);
+    animation:fall linear forwards;
+  }
+  @keyframes fall{
+    to{transform:translateY(110vh);opacity:.2}
+  }
+
+  /* Hearts */
+  .hearts{position:absolute;left:0;right:0;bottom:0;height:40%;pointer-events:none}
+  .heart{
+    position:absolute;width:14px;height:14px;background:var(--red);
+    transform:rotate(45deg);opacity:.8;animation:rise 6s ease-in infinite;
+  }
+  .heart::before,.heart::after{
+    content:"";position:absolute;width:14px;height:14px;background:var(--red);border-radius:50%;
+  }
+  .heart::before{left:-7px}
+  .heart::after{top:-7px}
+  @keyframes rise{
+    0%{transform:translateY(0) rotate(45deg);opacity:.0}
+    10%{opacity:.8}
+    100%{transform:translateY(-60vh) rotate(45deg);opacity:0}
+  }
+
+  /* Page themes */
+  .p1 .card{background:linear-gradient(180deg, rgba(155,93,229,.18), rgba(255,255,255,.06))}
+  .p2 .card{background:linear-gradient(180deg, rgba(46,196,182,.18), rgba(255,255,255,.06))}
+  .p3 .card{background:linear-gradient(180deg, rgba(255,77,109,.18), rgba(255,255,255,.06))}
+  .p4 .card{background:linear-gradient(180deg, rgba(255,209,102,.18), rgba(255,255,255,.06))}
+  .p5 .card{background:linear-gradient(180deg, rgba(0,199,255,.18), rgba(255,255,255,.06))}
+  .p6 .card{background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.06))}
+
+  /* Progress bar */
+  .progress{
+    position:absolute;left:0;right:0;top:0;height:4px;background:rgba(255,255,255,.12);
+  }
+  .progress .bar{
+    height:100%;width:0;background:linear-gradient(90deg, var(--gold), var(--red));
+    box-shadow:0 0 12px rgba(255,209,102,.6);
+    transition:width .6s ease;
+  }
+
+  /* Mobile tweaks */
+  @media (max-width:560px){
+    .mascot{opacity:.9}
+    .message{max-width:100%}
+
+    .magicMoment {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.magicMoment img {
+  max-width: 80%;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.6);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 1.2s ease, transform 1.2s ease;
+}
+
+.magicMoment img.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="dot"></div>
+      <div>Christmas E‑Card</div>
+    </div>
+    <div class="controls">
+      <button class="ghost" id="muteBtn">🔊 Music</button>
+      <button class="secondary" id="replayBtn">↻ Replay</button>
+      <span class="page-indicator" id="pageIndicator">Page 1 / 6</span>
+    </div>
+  </header>
+
+  <main class="pages">
+    <div class="progress"><div class="bar" id="progressBar"></div></div>
+    <div class="snow" id="snow"></div>
+    <div class="hearts" id="hearts"></div>
+
+    <!-- Page 1: Warm Welcome -->
+    <section class="page p1 active" data-page="1">
+      <div class="card">
+        <h1 class="title">Merry Christmas, My Best Friend</h1>
+        <p class="subtitle">You’re my favorite miracle of the year.</p>
+        <p class="message">
+          Tonight the lights feel softer, the air a little sweeter—because you’re here in my world.
+          You’re my best friend, my love, my life. This gift is six little pages of my heart,
+          wrapped in sparkle and warmth, just for you.
+        </p>
+        <div class="cta">
+          <button id="next1">Open the first surprise ✨</button>
+        </div>
+        <!-- Santa Cat Mascot -->
+        <svg class="mascot" viewBox="0 0 200 200" aria-label="Santa Cat">
+          <!-- Hat -->
+          <path d="M30 70 C60 20, 140 20, 170 70 L30 70 Z" fill="#ff4d6d"/>
+          <circle cx="170" cy="70" r="10" fill="#f7f7ff"/>
+          <!-- Face -->
+          <circle cx="100" cy="110" r="55" fill="#ffd166"/>
+          <!-- Ears -->
+          <path d="M55 80 L35 50 L75 70 Z" fill="#ffd166"/>
+          <path d="M145 80 L165 50 L125 70 Z" fill="#ffd166"/>
+          <!-- Eyes -->
+          <circle cx="80" cy="110" r="6" fill="#0b1220"/>
+          <circle cx="120" cy="110" r="6" fill="#0b1220"/>
+          <!-- Nose -->
+          <circle cx="100" cy="125" r="4" fill="#ff4d6d"/>
+          <!-- Whiskers -->
+          <line x1="60" y1="130" x2="30" y2="130" stroke="#0b1220" stroke-width="2"/>
+          <line x1="60" y1="135" x2="30" y2="140" stroke="#0b1220" stroke-width="2"/>
+          <line x1="140" y1="130" x2="170" y2="130" stroke="#0b1220" stroke-width="2"/>
+          <line x1="140" y1="135" x2="170" y2="140" stroke="#0b1220" stroke-width="2"/>
+          <!-- Smile -->
+          <path d="M85 140 Q100 150 115 140" stroke="#0b1220" stroke-width="3" fill="none"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Page 2: Best Friend -->
+    <section class="page p2" data-page="2">
+      <div class="card">
+        <h1 class="title">To My Best Friend</h1>
+        <p class="subtitle">You turn ordinary days into cozy stories.</p>
+        <p class="message">
+          Your laugh is my favorite soundtrack. Your messages feel like warm cocoa.
+          You know my chaos and still choose me—again and again. That’s friendship stitched with love.
+        </p>
+        <div class="cta"><button id="next2">Next page 🎁</button></div>
+      </div>
+    </section>
+
+    <!-- Page 3: My Love -->
+    <section class="page p3" data-page="3">
+      <div class="card">
+        <h1 class="title">To My Love</h1>
+        <p class="subtitle">You’re the glow in every light I see.</p>
+        <p class="message">
+          I fall for your kindness, your courage, your silly jokes, your quiet strength.
+          Loving you feels like home—soft, safe, and full of wonder. I choose you, every day.
+        </p>
+        <div class="cta"><button id="next3">Keep going 🌟</button></div>
+      </div>
+    </section>
+
+    <!-- Page 4: My Life -->
+    <section class="page p4" data-page="4">
+      <div class="card">
+        <h1 class="title">To My Life</h1>
+        <p class="subtitle">You’re the chapter I never want to end.</p>
+        <p class="message">
+          When I plan my tomorrows, you’re in every scene—hand in hand, heart to heart.
+          You’re not just part of my life; you’re the reason it feels like a beautiful story.
+        </p>
+        <div class="cta"><button id="next4">Almost there 💫</button></div>
+      </div>
+    </section>
+
+    <!-- Page 5: Memories -->
+    <section class="page p5" data-page="5">
+      <div class="card">
+        <h1 class="title">Our Little Memories</h1>
+        <p class="subtitle">Tiny moments, endless magic.</p>
+        <p class="message">
+          The way you say my name. The way we share secrets. The way silence feels easy.
+          I keep them like ornaments—each one shining, each one us.
+        </p>
+        <div class="cta"><button id="next5">Final page ❤️</button></div>
+      </div>
+    </section>
+
+    <!-- Page 6: Promise -->
+    <section class="page p6" data-page="6">
+      <div class="card">
+        <h1 class="title">My Christmas Promise</h1>
+        <p class="subtitle">Best friend, love, and life—always you.</p>
+        <p class="message">
+          I’ll protect your heart, celebrate your wins, and hold you close through every season.
+          Merry Christmas, my everything. Thank you for being you.
+        </p>
+        <div class="cta">
+          <button id="replayBtn2">Replay ↻</button>
+        </div>
+
+        <!-- Magic Moment Photo -->
+<div class="magicMoment">
+  <img id="magicPhoto" src="C:\Users\Hara prasad Padhi\Downloads\ChatGPT Image Dec 3, 2025, 11_47_25 AM.png" alt="Magic Moment" />
+</div>
+
+
+
+
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>Made with love and sparkle ✨</div>
+    <div class="controls">
+      <button id="prevBtn">◀ Prev</button>
+      <button id="nextBtn">Next ▶</button>
+    </div>
+  </footer>
+</div>
+
+<!-- Background music (royalty‑free vibe suggestion; you can replace the src) -->
+<audio id="bgm" loop>
+  <!-- You can replace with your own MP3 path -->
+  <source src="" type="audio/mpeg">
+</audio>
+
+<script>
+/* ---------- State & Navigation ---------- */
+const pages = Array.from(document.querySelectorAll('.page'));
+const progressBar = document.getElementById('progressBar');
+const pageIndicator = document.getElementById('pageIndicator');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const bgm = document.getElementById('bgm');
+const muteBtn = document.getElementById('muteBtn');
+const replayBtn = document.getElementById('replayBtn');
+const snow = document.getElementById('snow');
+const hearts = document.getElementById('hearts');
+
+let current = 0;
+let muted = true;
+
+/* ---------- Helpers ---------- */
+function showPage(i){
+  pages.forEach((p,idx)=>{
+    p.classList.toggle('active', idx===i);
+  });
+  current = i;
+  const pct = ((i+1)/pages.length)*100;
+  progressBar.style.width = pct + '%';
+  pageIndicator.textContent = `Page ${i+1} / ${pages.length}`;
+  timedReveal(i);
+}
+
+function next(){ if(current < pages.length-1) showPage(current+1); }
+function prev(){ if(current > 0) showPage(current-1); }
+
+function replay(){
+  showPage(0);
+  // small flourish
+  burstHearts();
+}
+
+/* ---------- Timed reveals per page ---------- */
+function timedReveal(i){
+  // subtle heart bursts on key pages
+  if([0,2,5].includes(i)) burstHearts();
+}
+
+/* ---------- Snow generator ---------- */
+function makeSnow(){
+  snow.innerHTML = '';
+  const count = 80;
+  for(let i=0;i<count;i++){
+    const f = document.createElement('div');
+    f.className = 'flake';
+    const size = 4 + Math.random()*6;
+    f.style.width = size+'px';
+    f.style.height = size+'px';
+    f.style.left = Math.random()*100+'vw';
+    const dur = 6 + Math.random()*8;
+    f.style.animationDuration = dur+'s';
+    f.style.animationDelay = Math.random()*6+'s';
+    snow.appendChild(f);
+  }
+}
+
+/* ---------- Hearts generator ---------- */
+function burstHearts(){
+  for(let i=0;i<16;i++){
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.style.left = (10 + Math.random()*80) + 'vw';
+    h.style.bottom = (Math.random()*10) + 'vh';
+    h.style.animationDelay = (Math.random()*1.2)+'s';
+    h.style.transform = `scale(${0.6 + Math.random()*1.2}) rotate(45deg)`;
+    hearts.appendChild(h);
+    setTimeout(()=>h.remove(), 6000);
+  }
+}
+
+
+
+function timedReveal(i){
+  if([0,2,5].includes(i)) burstHearts();
+  if(i === 5){ // Page index 5 = Page 6
+    magicMomentPhoto();
+  }
+}
+
+/* ---------- Music ---------- */
+function toggleMute(){
+  muted = !muted;
+  muteBtn.textContent = muted ? '🔇 Music' : '🔊 Music';
+  if(!muted){
+    bgm.volume = 0.6;
+    bgm.play().catch(()=>{ /* autoplay may be blocked until user clicks */ });
+  }else{
+    bgm.pause();
+  }
+}
+
+/* ---------- Share (Web Share API fallback) ---------- */
+function share(){
+  const text = 'A Christmas e‑card made with love 🎄❤️';
+  const url = location.href;
+  if(navigator.share){
+    navigator.share({title:'Christmas E‑Card', text, url});
+  }else{
+    navigator.clipboard.writeText(url).then(()=>{
+      alert('Link copied! Share this magic ✨');
+    });
+  }
+}
+
+/* ---------- Wire up ---------- */
+document.getElementById('next1').addEventListener('click', next);
+document.getElementById('next2').addEventListener('click', next);
+document.getElementById('next3').addEventListener('click', next);
+document.getElementById('next4').addEventListener('click', next);
+document.getElementById('next5').addEventListener('click', next);
+document.getElementById('replayBtn2').addEventListener('click', replay);
+
+prevBtn.addEventListener('click', prev);
+nextBtn.addEventListener('click', next);
+replayBtn.addEventListener('click', replay);
+muteBtn.addEventListener('click', toggleMute);
+document.getElementById('shareBtn')?.addEventListener('click', share);
+
+/* ---------- Init ---------- */
+makeSnow();
+burstHearts();
+</script>
+</body>
+</html>
